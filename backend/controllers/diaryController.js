@@ -67,7 +67,7 @@ const getDiaryById = async (req, res) => {
     if (!diary) {
       return res.status(404).json({ message: '日记未找到' });
     }
-    // 添加权限检查
+    // 权限检查
     if (diary.status !== 'approved' && req.user._id.toString() !== diary.author._id.toString() && !['reviewer', 'admin'].includes(req.user.role)) {
       return res.status(403).json({ message: '无访问权限' });
     }
@@ -165,7 +165,6 @@ const deleteDiary = async (req, res) => {
   }
 };
 
-// 审核日记
 const reviewDiary = async (req, res) => {
   try {
     const { status, rejectionReason } = req.body;
@@ -204,15 +203,12 @@ const getDiariesForAdmin = async (req, res) => {
     if (statusFilter && ['pending', 'approved', 'rejected'].includes(statusFilter)) {
       query.status = statusFilter; // 如果提供了有效的状态，则加入查询
     }
-    // 如果 statusFilter 为空或无效，则查询所有状态
 
     const diaries = await Diary.find(query)
       .sort({ _id: -1 }) // 或按更新时间等排序
       .skip(skip)
       .limit(limit)
       .populate('author', 'nickname avatar'); // 填充作者信息
-
-    // (可选) 获取总数用于分页
     const totalDiaries = await Diary.countDocuments(query);
 
     res.status(200).json({

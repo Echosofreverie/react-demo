@@ -1,6 +1,4 @@
 const User = require('../models/User');
-// 修改导入语句
-// const bcrypt = require('bcryptjs');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
