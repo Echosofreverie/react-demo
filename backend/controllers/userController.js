@@ -1,4 +1,28 @@
 const User = require('../models/User');
+const fs = require('fs'); // 引入 Node.js 文件系统模块
+const path = require('path'); // 引入 path 模块
+
+// --- Helper function to safely delete a file ---
+const deleteFile = (filePath) => {
+  // filePath 应该是类似 'uploads/avatars/avatar-123.jpg' 的相对路径
+  // 需要转换为绝对路径才能被 fs.existsSync 和 fs.unlinkSync 使用
+  const absolutePath = path.join(__dirname, '..', filePath); // 回到项目根目录再进入 filePath
+  // 检查文件是否存在，并且不是默认头像（如果你的 User 模型有默认值的话）
+  // 假设默认头像路径不是存储在 uploads 目录，或者有一个特定的名字
+  const isDefaultAvatar = filePath === 'path/to/your/default/avatar.png'; // 修改为你的默认头像路径或判断逻辑
+
+  if (filePath && !isDefaultAvatar && fs.existsSync(absolutePath)) {
+    try {
+      fs.unlinkSync(absolutePath);
+      console.log(`文件已删除: ${absolutePath}`);
+      return true;
+    } catch (err) {
+      console.error(`删除文件失败: ${absolutePath}`, err);
+      return false;
+    }
+  }
+  return false; // 文件不存在或无需删除
+};
 
 // 获取所有用户
 const getAllUsers = async (req, res) => {
@@ -83,17 +107,31 @@ const updateUser = async (req, res) => {
     // 更新非密码字段
     Object.assign(user, filteredFields);
 
+    // 处理头像更新
+    if (req.file && req.file.fieldname === 'avatar') {
+      const newAvatarPath = req.file.path;
+      if (user.avatar) {
+        deleteFile(user.avatar);
+      }
+      user.avatar = newAvatarPath;
+    }
+
     // 处理密码更新
     if (password) {
       user.password = password;
     }
 
     const updatedUser = await user.save();
-    res.json(updatedUser);
+    const userResponse = updatedUser.toObject();
+    delete userResponse.password;
+    res.json({ message: '用户信息更新成功', data: userResponse });
   } catch (err) {
     console.error(err.message);
     if (err.kind === 'ObjectId') {
       return res.status(404).json({ message: '用户未找到' });
+    }
+    if (req.file) {
+      deleteFile(req.file.path);
     }
     res.status(500).send('服务器错误');
   }
@@ -106,10 +144,14 @@ const deleteUser = async (req, res) => {
     return res.status(403).json({ message: '只有管理员可以删除用户' });
   }
   try {
-    const user = await User.findByIdAndDelete(req.params.id);
+    const user = await User.findById(req.params.id);
     if (!user) {
       return res.status(404).json({ message: '用户未找到' });
     }
+    if (user.avatar) {
+      deleteFile(user.avatar);
+    }
+    await User.findByIdAndDelete(req.params.id);
     res.json({ message: '用户已删除' });
   } catch (err) {
     console.error(err.message);
@@ -120,8 +162,23 @@ const deleteUser = async (req, res) => {
   }
 };
 
+// 获取当前登录用户信息
+const getMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    if (!user) {
+      return res.status(404).json({ message: '用户未找到' });
+    }
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('服务器错误');
+  }
+};
+
 module.exports = {
   getAllUsers,
+  getMe,
   getUserById,
   createUser,
   updateUser,

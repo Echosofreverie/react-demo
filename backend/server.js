@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const path = require('path');
 const app = express();
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
@@ -17,6 +18,9 @@ db.once('open', () => {
 
 // 解析 JSON 数据
 app.use(express.json());
+
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // 定义路由
 app.get('/', (req, res) => {
