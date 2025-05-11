@@ -13,7 +13,7 @@ const getApprovedDiariesPublic = async (req, res) => {
 
     let query;
     if (search) {
-      const users = await User.find({ nickname: { $regex: search, $options: 'i' } }).select('_id');
+      const users = await User.find({ username: { $regex: search, $options: 'i' } }).select('_id');
       const userIds = users.map(user => user._id);
       query = {
         status: 'approved',
@@ -30,7 +30,7 @@ const getApprovedDiariesPublic = async (req, res) => {
       .sort({ _id: -1 })
       .skip(skip)
       .limit(limit)
-      .populate('author', 'nickname avatar');
+      .populate('author', 'username avatar');
 
     res.status(200).json({ message: '获取已通过日记', data: diaries });
   } catch (err) {
@@ -226,7 +226,7 @@ const getDiariesForAdmin = async (req, res) => {
       .sort({ _id: -1 }) // 或按更新时间等排序
       .skip(skip)
       .limit(limit)
-      .populate('author', 'nickname avatar'); // 填充作者信息
+      .populate('author', 'username avatar'); // 填充作者信息
     const totalDiaries = await Diary.countDocuments(query);
 
     res.status(200).json({
@@ -246,7 +246,7 @@ const getDiariesForAdmin = async (req, res) => {
 const getDiaryById = async (req, res) => {
   try {
     const diary = await Diary.findById(req.params.id)
-      .populate('author', 'nickname avatar');
+      .populate('author', 'username avatar');
 
     if (!diary) {
       return res.status(404).json({ message: '日记未找到' });

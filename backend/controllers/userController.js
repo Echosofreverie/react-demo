@@ -96,7 +96,7 @@ const updateUser = async (req, res) => {
     }
 
     // 过滤可更新字段
-    const allowedFields = ['nickname', 'avatar'];
+    const allowedFields = ['username', 'avatar'];
     const filteredFields = {};
     Object.keys(otherFields).forEach(key => {
       if (allowedFields.includes(key)) {
