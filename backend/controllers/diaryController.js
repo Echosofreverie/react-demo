@@ -41,12 +41,8 @@ const getApprovedDiariesPublic = async (req, res) => {
 
 // --- Helper function to safely delete a file ---
 const deleteFile = (filePath) => {
-  // filePath 应该是类似 'uploads/avatars/avatar-123.jpg' 的相对路径
-  // 需要转换为绝对路径才能被 fs.existsSync 和 fs.unlinkSync 使用
-  const absolutePath = path.join(__dirname, '..', filePath); // 回到项目根目录再进入 filePath
-  // 检查文件是否存在，并且不是默认头像（如果你的 User 模型有默认值的话）
-  // 假设默认头像路径不是存储在 uploads 目录，或者有一个特定的名字
-  const isDefaultAvatar = filePath === 'path/to/your/default/avatar.png'; // 修改为你的默认头像路径或判断逻辑
+  const absolutePath = path.join(__dirname, '..', filePath); 
+  const isDefaultAvatar = filePath === 'backend/uploads/avatars/avatar-1746986468429-786021396.png'; // 修改为你的默认头像路径或判断逻辑
 
   if (filePath && !isDefaultAvatar && fs.existsSync(absolutePath)) {
     try {

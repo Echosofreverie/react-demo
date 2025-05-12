@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
   username: { type: String, required: true , unique: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  avatar: { type: String, default: 'default_avatar_url' },
+  avatar: { type: String, default: '..\\uploads\\avatars\\avatar-1746986468429-786021396.png' },
   role: { type: String, enum: ['user', 'reviewer','admin'], default: 'user' }
 }, { timestamps: true });
 
