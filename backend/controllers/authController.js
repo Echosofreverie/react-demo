@@ -28,11 +28,11 @@ const login = async (req, res) => {
 
     jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 3600 }, (err, token) => {
       if (err) throw err;
-      res.json({ token });
+      res.status(200).json({ token });
     });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('服务器错误');
+    res.status(500).json({ message: '服务器错误' });
   }
 };
 
@@ -62,11 +62,11 @@ const register = async (req, res) => {
 
     jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 3600 }, (err, token) => {
       if (err) throw err;
-      res.json({ token });
+      res.status(201).json({ token });
     });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('服务器错误');
+    res.status(500).json({ message: '服务器错误' });
   }
 };
 
