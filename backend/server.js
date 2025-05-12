@@ -33,9 +33,9 @@ const userRoutes = require('./routes/users');
 const diaryRoutes = require('./routes/diaries');
 
 // 挂载路由
-app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/diaries', diaryRoutes);
+app.use('/trip/auth', authRoutes);
+app.use('/trip/users', userRoutes);
+app.use('/trip/diaries', diaryRoutes);
 
 // 启动服务器
 const PORT = process.env.PORT || 5000;

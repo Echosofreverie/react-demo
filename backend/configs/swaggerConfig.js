@@ -16,6 +16,28 @@ const swaggerOptions = {
     ],
     components: {
       schemas: {
+        // 新增：AuthTokenResponse（替换原有的 Authentication）
+        AuthTokenResponse: {
+          type: 'object',
+          properties: {
+            token: {
+              type: 'string',
+              description: '用户登录/注册后返回的 JWT 令牌',
+              example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGI2YjUwYjUwYjUwYjUwYjUwYjUwYjUiLCJpYXQiOjE2OTU4NzYwMDAsImV4cCI6MTY5NTk2MjQwMH0.abc123xyz'
+            }
+          }
+        },
+        // 新增：ErrorResponse（通用错误响应）
+        ErrorResponse: {
+          type: 'object',
+          properties: {
+            message: {
+              type: 'string',
+              description: '错误信息',
+              example: '用户名已存在'
+            }
+          }
+        },
         // 根据 models/Diary.js 定义 Diary 模型
         Diary: {
           type: 'object',
@@ -67,9 +89,9 @@ const swaggerOptions = {
       }
     }
   },
-  apis: ['./routes/*.js'], // Only parse route files with OpenAPI comments
+  apis: ['./routes/*.js'], 
 };
 
-const swaggerDocs = swaggerJsDoc(swaggerOptions); // 错误发生在这里
+const swaggerDocs = swaggerJsDoc(swaggerOptions); 
 
 module.exports = swaggerDocs;
