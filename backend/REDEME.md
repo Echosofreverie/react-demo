@@ -72,12 +72,6 @@ node server.js
 ## API文档
 通过Swagger生成，启动服务后访问`/api-docs`查看所有接口定义及测试。
 
-## 测试
-运行单元测试：
-```bash
-npm test
-```
-
 ## 依赖列表
 ### 生产依赖
 - express: Web框架
