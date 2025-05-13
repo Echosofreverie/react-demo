@@ -12,6 +12,10 @@ const swaggerOptions = {
       description: 'API 接口文档',
     },
     servers: [
+      {
+        url: 'https://77b8-223-122-232-228.ngrok-free.app/trip', // <--- 新增的 Ngrok URL
+        description: 'Ngrok Deployed Server (Local)'
+      },
       { url: 'http://localhost:5000' } 
     ],
     components: {
@@ -38,7 +42,82 @@ const swaggerOptions = {
             }
           }
         },
+        DiaryResponse: {
+          $ref: '#/components/schemas/Diary'
+        },
+        responses: {
+          UnauthorizedError: {
+            description: '未认证（无效或未提供 Token）',
+            content: {
+              'application/json': {
+                schema: {
+                  $ref: '#/components/schemas/ErrorResponse'
+                }
+              }
+            }
+          },
+          ForbiddenError: {
+            description: '无权限访问（角色或权限不足）',
+            content: {
+              'application/json': {
+                schema: {
+                  $ref: '#/components/schemas/ErrorResponse'
+                }
+              }
+            }
+          },
+          InternalServerError: {
+            description: '服务器内部错误',
+            content: {
+              'application/json': {
+                schema: {
+                  $ref: '#/components/schemas/ErrorResponse'
+                }
+              }
+            }
+          }
+        },
+        securitySchemes: {
+          bearerAuth: {
+            type: 'http',
+            scheme: 'bearer',
+            bearerFormat: 'JWT'
+          }
+        },
         // 根据 models/Diary.js 定义 Diary 模型
+        DiaryListResponse: { // 新增
+          type: 'object',
+          properties: {
+            message: { 
+              type: 'string', 
+              description: '操作提示信息',
+              example: '获取已通过审核的日记列表成功' 
+            },
+            data: {
+              type: 'array',
+              items: { 
+                $ref: '#/components/schemas/Diary' // 引用已有的 Diary Schema
+              },
+              description: '日记列表数据'
+            },
+            // 可选：如果接口支持分页，添加分页字段
+            currentPage: { 
+              type: 'integer', 
+              description: '当前页码',
+              example: 1 
+            },
+            totalPages: { 
+              type: 'integer', 
+              description: '总页数',
+              example: 5 
+            },
+            totalDiaries: { 
+              type: 'integer', 
+              description: '总日记数',
+              example: 50 
+            }
+          }
+        },
         Diary: {
           type: 'object',
           required: ['title', 'content', 'images', 'author'], 
