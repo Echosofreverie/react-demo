@@ -28,27 +28,29 @@ const login = async (req, res) => {
 
     jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 3600 }, (err, token) => {
       if (err) throw err;
-      res.json({ token });
+      res.status(200).json({ token });
     });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('服务器错误');
+    res.status(500).json({ message: '服务器错误' });
   }
 };
 
 // 注册
 const register = async (req, res) => {
   try {
-    const { username, nickname, email, password } = req.body;
+    const { username, email, password } = req.body;
+    let userN  = await User.findOne({ username });
+    if (userN) {
+      return res.status(400).json({ message: '此用户名已被注册，请选择其他唯一的用户名。' });
+    }
     let user = await User.findOne({ email });
 
     if (user) {
-      return res.status(400).json({ message: '用户已存在' });
+      return res.status(400).json({ message: '此邮箱地址已被注册，请使用该邮箱进行登录。' });
     }
 
-    user = new User({ username, nickname, email, password });
-
-
+    user = new User({  username, email, password });
     await user.save();
 
     const payload = {
@@ -60,11 +62,11 @@ const register = async (req, res) => {
 
     jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 3600 }, (err, token) => {
       if (err) throw err;
-      res.json({ token });
+      res.status(201).json({ token });
     });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('服务器错误');
+    res.status(500).json({ message: '服务器错误' });
   }
 };
 

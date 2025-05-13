@@ -72,30 +72,14 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// --- 文件大小限制 (可选，但推荐) ---
 const limits = {
-  fileSize: 1024 * 1024 * 100 // 限制文件大小为 100MB (根据需要调整)
-  // 你可以为不同类型的上传设置不同的限制，例如头像限制小一点
+  fileSize: 1024 * 1024 * 100 
 };
 
-// --- 创建 Multer 实例 ---
-// 使用上面定义的 storage, fileFilter, limits 来创建 Multer 实例
 const upload = multer({
   storage: storage,
   fileFilter: fileFilter,
   limits: limits
 });
 
-// --- 导出配置好的 Multer 中间件 ---
-// 我们将导出 upload 实例，然后在路由中使用它的方法 (.single, .array, .fields)
 module.exports = upload;
-
-// 如果你想为不同类型的上传（如头像和日记文件）使用不同的配置（例如不同的大小限制），
-// 你可以创建多个 Multer 实例：
-/*
-const uploadAvatar = multer({ storage: storage, fileFilter: fileFilter, limits: { fileSize: 1024 * 1024 * 5 } }); // 5MB for avatars
-const uploadDiaryFiles = multer({ storage: storage, fileFilter: fileFilter, limits: { fileSize: 1024 * 1024 * 100 } }); // 100MB for diary files
-module.exports = { uploadAvatar, uploadDiaryFiles };
-*/
-// 如果你采用上面注释掉的方式导出多个实例，请确保在路由中导入和使用正确的实例。
-// 在后续步骤中，我将假设你导出了一个通用的 `upload` 实例。如果你选择导出多个，请相应调整路由中的代码。

@@ -5,8 +5,9 @@ const app = express();
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocs = require('./configs/swaggerConfig');
-
+const cors = require('cors');
 // 连接 MongoDB
+app.use(cors());
 mongoose.connect('mongodb://localhost:27017/travel_diary_db');
 
 const db = mongoose.connection;
@@ -19,7 +20,7 @@ db.once('open', () => {
 // 解析 JSON 数据
 app.use(express.json());
 
-
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // 定义路由
@@ -33,9 +34,9 @@ const userRoutes = require('./routes/users');
 const diaryRoutes = require('./routes/diaries');
 
 // 挂载路由
-app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/diaries', diaryRoutes);
+app.use('/trip/auth', authRoutes);
+app.use('/trip/users', userRoutes);
+app.use('/trip/diaries', diaryRoutes);
 
 // 启动服务器
 const PORT = process.env.PORT || 5000;

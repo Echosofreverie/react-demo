@@ -13,7 +13,7 @@ res.json(rows);
         });
 
 // 新增 API 端点：获取所有旅行日记
-router.get('/api/diaries', async (req, res) => {
+router.get('/trip/diaries', async (req, res) => {
   try {
     const Diary = require('../models/Diary');
     const diaries = await Diary.find();
@@ -25,7 +25,7 @@ router.get('/api/diaries', async (req, res) => {
 });
 
 // 新增 API 端点：创建旅行日记
-router.post('/api/diaries', async (req, res) => {
+router.post('/trip/diaries', async (req, res) => {
   try {
     const Diary = require('../models/Diary');
     const newDiary = new Diary(req.body);

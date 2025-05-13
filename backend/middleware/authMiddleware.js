@@ -19,12 +19,12 @@ const protect = async (req, res, next) => {
       next();
     } catch (error) {
       console.error('Token 验证失败:', error.message);
-      res.status(401).json({ message: '未认证，Token 无效或已过期' });
+      return res.status(401).json({ message: '未认证，Token 无效或已过期' });
     }
   }
 
   if (!token) {
-    res.status(401).json({ message: '未认证，没有提供 Token' });
+    return res.status(401).json({ message: '未认证，没有提供 Token' });
   }
 };
 
