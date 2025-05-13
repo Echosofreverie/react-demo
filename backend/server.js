@@ -5,8 +5,9 @@ const app = express();
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocs = require('./configs/swaggerConfig');
-
+const cors = require('cors');
 // 连接 MongoDB
+app.use(cors());
 mongoose.connect('mongodb://localhost:27017/travel_diary_db');
 
 const db = mongoose.connection;
