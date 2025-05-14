@@ -111,7 +111,6 @@ backend/
 ### 开发依赖（devDependencies）
 | 依赖名                  | 版本     | 说明                     |
 |-------------------------|----------|--------------------------|
-| jest                    | v29.7.0  | 测试框架                 |
 | mongodb-memory-server   | v10.1.4  | 测试用内存 MongoDB       |
 | supertest               | v7.1.0   | HTTP 请求测试工具        |
 
